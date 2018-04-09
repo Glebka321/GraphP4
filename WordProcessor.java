@@ -72,42 +72,34 @@ public class WordProcessor {
             }
         }
 
-        //TODO: @Connor
-        // I THINK that this is a workable simplification, but would be awesome if someone could verify
-        if ( sizeDifference == 1 ) {
-            if ( word1.contains(word2) || word2.contains(word1) ) {
-                differenceCount++;
+        if (word1.length() - word2.length() == 1) {
+            int i = 0;
+            while (i < word2.length() && Character.toString(word1.charAt(i))
+                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
+                i++;
+            }
+            differenceCount++;
+            for (int j = i; j < word2.length(); j++) {
+                if (Character.toString(word1.charAt(j + 1))
+                                .compareTo(Character.toString(word2.charAt(j))) != 0) {
+                    differenceCount++;
+                }
             }
         }
-
-//        if (word1.length() - word2.length() == 1) {
-//            int i = 0;
-//            while (i < word2.length() && Character.toString(word1.charAt(i))
-//                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
-//                i++;
-//            }
-//            differenceCount++;
-//            for (int j = i; j < word2.length(); j++) {
-//                if (Character.toString(word1.charAt(j + 1))
-//                                .compareTo(Character.toString(word2.charAt(j))) != 0) {
-//                    differenceCount++;
-//                }
-//            }
-//        }
-//        if (word1.length() - word2.length() == -1) {
-//            int i = 0;
-//            while (i < word1.length() && Character.toString(word1.charAt(i))
-//                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
-//                i++;
-//            }
-//            differenceCount++;
-//            for (int j = i; j < word1.length(); j++) {
-//                if (Character.toString(word1.charAt(j))
-//                                .compareTo(Character.toString(word2.charAt(j + 1))) != 0) {
-//                    differenceCount++;
-//                }
-//            }
-//        }
+        if (word1.length() - word2.length() == -1) {
+            int i = 0;
+            while (i < word1.length() && Character.toString(word1.charAt(i))
+                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
+                i++;
+            }
+            differenceCount++;
+            for (int j = i; j < word1.length(); j++) {
+                if (Character.toString(word1.charAt(j))
+                                .compareTo(Character.toString(word2.charAt(j + 1))) != 0) {
+                    differenceCount++;
+                }
+            }
+        }
 
         return (differenceCount == 1);
     }

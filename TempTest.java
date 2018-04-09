@@ -11,10 +11,10 @@ public class TempTest {
 
         method();
 
-        String[] wordsA = {"dog", "cat", "cat", "smith", "paper", "paper", "oaky"};
-        String[] wordsB = {"dag", "ca", "cata", "zmith", "apaper", "papera", "aoigweh"};
+        String[] wordsA = {"dog", "cat", "cat", "smith", "paper", "paper", "oaky", "ct"};
+        String[] wordsB = {"dag", "ca", "cata", "zmith", "apaper", "papera", "aoigweh", "cat"};
 
-        boolean[] expected = {true, true, true, true, true, true, false};
+        boolean[] expected = {true, true, true, true, true, true, false, true};
         boolean[] results = new boolean[expected.length];
 
         for ( int i = 0; i < wordsA.length; i++ ) {
