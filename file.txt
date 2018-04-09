@@ -1,0 +1,2 @@
+SOME WORD this word does NOT count
+OK WHAT

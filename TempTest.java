@@ -1,10 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TempTest {
     // Let's test some words ay
 
     public static void main(String[] args) {
+
+        method();
 
         String[] wordsA = {"dog", "cat", "cat", "smith", "paper", "paper", "oaky"};
         String[] wordsB = {"dag", "ca", "cata", "zmith", "apaper", "papera", "aoigweh"};
@@ -22,5 +27,21 @@ public class TempTest {
         }
 
         System.out.println(Arrays.equals(expected, results) ? "passed" : "failed");
+    }
+
+    public static void method() {
+        ArrayList<String> words = null;
+        try {
+            Stream<String> stream = WordProcessor.getWordStream("file.txt");
+            words = stream.map(string -> string.split(" "))
+                                           .flatMap(Arrays::stream)
+                                           .collect(Collectors.toCollection(ArrayList::new));
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        if ( words != null ) {
+            System.out.println(words);
+        }
     }
 }
