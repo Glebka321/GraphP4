@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  *  - this method needs to be invoked first for other methods on shortest path computation to work.
  * @see #shortestPathPrecomputation()
  *  - applies a shortest path algorithm to precompute data structures (that store shortest path data)
- *  - the shortest path data structures are used later to 
+ *  - the shortest path data structures are used later 
  *    to quickly find the shortest path and distance between two vertices.
  *  - this method is called after any call to populateGraph.
  *  - It is not called again unless new graph information is added via populateGraph().
@@ -66,7 +66,31 @@ public class GraphProcessor {
      * @return Integer the number of vertices (words) added; return -1 if file not found or if encountering other exceptions
      */
     public Integer populateGraph(String filepath) {
-        return 0;
+    	int count = 0;
+    	WordProcessor wp = new WordProcessor();
+    	Stream<String> wordStream = wp.getWordStream(filepath);
+    	
+    	for(String word : wordStream)
+    	{
+    		graph.addVertex(new Graphnode(word));
+    		count++;
+    	}
+    	
+    	/*
+    	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
+    	 */
+    	for(Graphnode node1 : graph)
+    	{
+    		for(Graphnode node2 : graph)
+    		{
+    			if(!node1.equals(node2) && wp.isAdjacent(node1.getData(), word2.getData()));
+    			{
+    				graph.addEdge(node1, node2);
+    			}
+    		}
+    	}
+    	
+        return count;
     
     }
 
