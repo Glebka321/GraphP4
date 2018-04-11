@@ -40,7 +40,7 @@ public class GraphProcessor {
     /**
      * Graph which stores the dictionary words and their associated connections
      */
-    private GraphADT<String> graph;
+    private Graph<String> graph;
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -59,31 +59,30 @@ public class GraphProcessor {
      * 
      * For all possible pairs of vertices, finds if the pair of vertices is adjacent {@link WordProcessor#isAdjacent(String, String)}
      * If a pair is adjacent, adds an undirected and unweighted edge between the pair of vertices in the graph.
-     *
-     * Log any issues encountered (print the issue details)
      * 
      * @param filepath file path to the dictionary
-     * @return Integer the number of vertices (words) added; return -1 if file not found or if encountering other exceptions
+     * @return Integer the number of vertices (words) added
+     * @throws IOException 
      */
-    public Integer populateGraph(String filepath) {
+    public Integer populateGraph(String filepath) throws IOException {
     	int count = 0;
     	WordProcessor wp = new WordProcessor();
     	Stream<String> wordStream = wp.getWordStream(filepath);
-    	
-    	for(String word : wordStream)
+    	String[] words = (String[]) wordStream.toArray();
+    	for(String word : words)
     	{
-    		graph.addVertex(new Graphnode(word));
+    		graph.addVertex(word);
     		count++;
     	}
     	
     	/*
     	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
     	 */
-    	for(Graphnode node1 : graph)
+    	for(String node1 : graph.getAllVertices())
     	{
-    		for(Graphnode node2 : graph)
+    		for(String node2 : graph.getAllVertices())
     		{
-    			if(!node1.equals(node2) && wp.isAdjacent(node1.getData(), word2.getData()));
+    			if(!node1.equals(node2) && wp.isAdjacent(node1, node2));
     			{
     				graph.addEdge(node1, node2);
     			}
@@ -107,9 +106,6 @@ public class GraphProcessor {
      *             kit
      *  shortest path between cat and wheat is the following list of words:
      *     [cat, hat, heat, wheat]
-     *
-     * If word1 = word2, List will be empty. 
-     * Both the arguments will always be present in the graph.
      * 
      * @param word1 first word
      * @param word2 second word
@@ -132,9 +128,6 @@ public class GraphProcessor {
      *             kit
      *  distance of the shortest path between cat and wheat, [cat, hat, heat, wheat]
      *   = 3 (the number of edges in the shortest path)
-     *
-     * Distance = -1 if no path found between words (true also for word1=word2)
-     * Both the arguments will always be present in the graph.
      * 
      * @param word1 first word
      * @param word2 second word
