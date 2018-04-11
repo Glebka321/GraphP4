@@ -1,256 +1,337 @@
+
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * Undirected and unweighted graph implementation
- * 
- * @param <E> type of a vertex
- * 
+ * Junit test class to test class @see Graph that implements @see GraphADT interface
+ *
  * @author sapan (sapan@cs.wisc.edu)
- * 
  */
-public class Graph<E> implements GraphADT<E> {
-    
-    /**
-     * Instance variables and constructors
-     */
+public class GraphTest {
+
+	private GraphADT<String> graph;
 	
+	private static List<String> vertices;
 	
-	/*
-	 * Stores all of the vertices of the graph as Graphnodes
-	 * in the order they were added
-	 */
-	private ArrayList<E> vertices;
+	private static int numOfVertices = 0;
 	
-	/*
-	 * Adjacency matrix, with the index of the node in the vertices
-	 * arraylist as the index for the 2D matrix
-	 * If an edge exists between the two graphnodes, edges[indexOfNode1][indexOfNode2]
-	 * will be true
-	 */
-	private boolean[][] edges;		
-	
-	public Graph()
-	{
-		vertices = new ArrayList<E>();
-		edges = new boolean[20][20];
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		vertices = new ArrayList<>();
+		vertices.add("at");
+		vertices.add("it");
+		vertices.add("cat");
+		vertices.add("hat");
+		vertices.add("hot");
+		vertices.add("rat");
+		vertices.add("heat");
+		vertices.add("neat");
+		vertices.add("major");
+		vertices.add("wheat");
+		vertices.add("streak");	
+		vertices.add("husband");
+		for (String vertex : vertices)
+			numOfVertices++;
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		vertices = null;
+		numOfVertices = 0;
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		this.graph = new Graph<>();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		this.graph = null;
+	}
+
+	@Test
+	public final void addVertexShouldNotAllowNullVertexAddition() {
+		String vertex = this.graph.addVertex(null);
+		assertEquals("return value when adding null vertex", null, vertex);
+		
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+		}
+		assertEquals("number of vertices in the graph", 0, verticesCount);
 	}
 	
-
-	/**
-     * Add new vertex to the graph
-     * 
-     * Valid argument conditions:
-     * 1. vertex should be non-null
-     * 2. vertex should not already exist in the graph 
-     * 
-     * @param vertex the vertex to be added
-     * @return vertex if vertex added, else return null if vertex can not be added (also if valid conditions are violated)
-     */
-    @Override
-    public E addVertex(E vertex) {
-        vertices.add(vertex);
-        return vertex;
-        
-    }
-
-
-    /**
-     * Remove the vertex and associated edge associations from the graph
-     * 
-     * Valid argument conditions:
-     * 1. vertex should be non-null
-     * 2. vertex should exist in the graph 
-     *  
-     * @param vertex the vertex to be removed
-     * @return vertex if vertex removed, else return null if vertex and associated edges can not be removed (also if valid conditions are violated)
-     */
-    @Override
-    
-    public E removeVertex(E vertex) {
-    	if(vertex == null)
-    		return null;
-		if(vertices.remove(vertex))
-			return vertex;
-		else
-			return null;
-        
-    }
-
-    /**
-     * Add an edge between two vertices (edge is undirected and unweighted)
-     * 
-     * Valid argument conditions:
-     * 1. both the vertices should exist in the graph
-     * 2. vertex1 should not equal vertex2
-     *  
-     * @param vertex1 the first vertex
-     * @param vertex2 the second vertex
-     * @return true if edge added, else return false if edge can not be added (also if valid conditions are violated)
-     */
-    @Override
-    public boolean addEdge(E vertex1, E vertex2) {
-    	if(vertices.contains(vertex1) && vertices.contains(vertex2))
-    	{
-    		edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = true;
-    		edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = true;
-    		return true;
-    	}
-        return false;
-        
-    }    
-
-    /**
-     * Remove the edge between two vertices (edge is undirected and unweighted)
-     * 
-     * Valid argument conditions:
-     * 1. both the vertices should exist in the graph
-     * 2. vertex1 should not equal vertex2
-     *  
-     * @param vertex1 the first vertex
-     * @param vertex2 the second vertex
-     * @return true if edge removed, else return false if edge can not be removed (also if valid conditions are violated)
-     */
-    @Override
-    public boolean removeEdge(E vertex1, E vertex2) {
-    	//The two vertices are in the graph and thus can be removed
-    	if(vertices.contains(vertex1) && vertices.contains(vertex2))
-    	{
-    		edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = false;
-    		edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = false;
-    		return true;
-    	}
-    	//One or more of the vertices are not in the graph
-    	return false;
-        
-    }
-
-    /**
-     * Check whether the two vertices are adjacent
-     * 
-     * Valid argument conditions:
-     * 1. both the vertices should exist in the graph
-     * 2. vertex1 should not equal vertex2
-     *  
-     * @param vertex1 the first vertex
-     * @param vertex2 the second vertex
-     * @return true if both the vertices have an edge with each other, else return false if vertex1 and vertex2 are not connected (also if valid conditions are violated)
-     */
-    @Override
-    public boolean isAdjacent(E vertex1, E vertex2) {
-    	
-    	/*
-    	 * Both vertices exist in the graph and the vertices
-    	 * are not the same
-    	 */
-        if(edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)]
-        	&& edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)]
-        	&& !vertex1.equals(vertex2))
-        	return true;
-    	
-    	return false;
-        
-    }
-
-    /**
-     * Get all the neighbor vertices of a vertex
-     * 
-     * @param vertex the vertex
-     * @return an iterable for all the immediate connected neighbor vertices
-     */
-    @Override
-    public Iterable<E> getNeighbors(E vertex) {
-        ArrayList<E> neighbors = new ArrayList<E>();
-        
-        /*
-         * Checks if an edge exists between the given vertex and all
-         * other vertices, and if so, the other vertice that shares an edge
-         * to the given vertice is added to the neighbors arraylist
-         */
-        for(int col = 0; col < edges.length; col++)
-        {
-        	if(edges[vertices.indexOf(vertex)][col])
-        	{
-        		neighbors.add(vertices.get(vertices.indexOf(col)));
-        	}
-        	
-        }
-        return neighbors;
-    }
-
-    /**
-     * Get all the vertices in the graph
-     * 
-     * @return an iterable for all the vertices
-     */
-    @Override
-    public Iterable<E> getAllVertices() {
-        return (Iterable<E>) vertices;
-        
-    }
-
-}
-
-
-/*
- * Sets up Graphnodes, which are the vertices of the
- * Graph. Each Graphnode contains a generic data, and
- * a boolean variable to decide if it is visited or not
- * for use in algorithms
- */
-class Graphnode<T> {
-	private T data;
-	private boolean visited;
-//	private ArrayList<Graphnode<T>> edges;
-	
-	
-	/*
-	 * Constructor for the graphnode
-	 * initializes the data of the node
-	 * to the data entered, and sets
-	 * visited to false
-	 */
-	public Graphnode(T data)
-	{
-		this.data = data;
-		visited = false;
-//		edges = new ArrayList<Graphnode<T>>();
+	@Test
+	public final void addVertexShouldAddUniqueVertices() {
+		List<String> addedVertices = new ArrayList<>();
+		for (String itrVertex1 : vertices) {
+			String returnedVertex = this.graph.addVertex(itrVertex1);
+			assertEquals("returned value doesn't match passed parameter", itrVertex1, returnedVertex);
+			addedVertices.add(returnedVertex);
+			int verticesCount = 0;
+			for (String itrVertex2 : this.graph.getAllVertices()) {
+				verticesCount++;
+				assertEquals("added vertex value present in graph", true, addedVertices.contains(itrVertex2));
+			}
+			assertEquals("number of vertices in the graph", addedVertices.size(), verticesCount);		
+		}
 	}
 	
-	/*
-	 * @return is whether the node has been marked
-	 * as visited
-	 */
-	public boolean isVisited()
-	{
-		return visited;
+	@Test
+	public final void addVertexShouldNotAllowDuplicateVertexAddition() {
+		String vertex1 = this.graph.addVertex(vertices.get(0));
+		System.out.println("vertex1="+vertex1);
+		String vertex2 = this.graph.addVertex(vertices.get(0));
+		System.out.println("vertex2="+vertex2);
+		assertEquals("return value when adding duplicate vertex", null, vertex2);
+		
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices())
+			verticesCount++;
+		assertEquals("number of vertices in the graph", 1, verticesCount);
+	}
+
+	@Test
+	public final void addEdgeIfAnyOfTheVerticesDoesNotExist() {
+		// setup the graph by adding few vertices
+		int breakIndex = 6;
+		List<String> toBeAddedVertices = new ArrayList<>(vertices.subList(0, breakIndex));
+		List<String> notToBeAddedVertices = new ArrayList<>(vertices.subList(breakIndex, breakIndex+2));
+		for (String itrVertex : toBeAddedVertices)
+			this.graph.addVertex(itrVertex);
+		
+		assertEquals("return value if vertex1 doesn't exist", 
+				false, this.graph.addEdge(notToBeAddedVertices.get(0), toBeAddedVertices.get(0)));		
+		assertEquals("return value if vertex2 doesn't exist", 
+				false, this.graph.addEdge(toBeAddedVertices.get(0), notToBeAddedVertices.get(0)));
+		assertEquals("return value if both vertex1 and vertex2 doesn't exist", 
+				false, this.graph.addEdge(notToBeAddedVertices.get(0), notToBeAddedVertices.get(1)));
+		
+		// check if any edge added
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+			}
+			assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 0, numOfEdges);
+		}
+		assertEquals("number of vertices in the graph", breakIndex, verticesCount);
 	}
 	
-	/*
-	 * @return is the data stored
-	 * in the Graphnode
-	 */
-	public T getData()
-	{
-		return data;
+	@Test
+	public final void addEdgeIfBothVerticesExist() {
+		// setup the graph by adding few vertices
+		for (String itrVertex : vertices)
+			this.graph.addVertex(itrVertex);
+		
+		assertEquals("return value if vertex1 equals vertex2", 
+				false, this.graph.addEdge(vertices.get(0), vertices.get(0)));
+		assertEquals("return value if vertex1 does not equal vertex2", 
+				true, this.graph.addEdge(vertices.get(0), vertices.get(1)));
+		
+		// check if correct edges added
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+				if (itrVertex.equals(vertices.get(0)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(1), itrNeighbor);
+				else if (itrVertex.equals(vertices.get(1)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(0), itrNeighbor);
+			}
+			if (itrVertex.equals(vertices.get(0)) || itrVertex.equals(vertices.get(1)))
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 1, numOfEdges);
+			else
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 0, numOfEdges);
+		}
+		assertEquals("number of vertices in the graph", numOfVertices, verticesCount);
 	}
 	
-//	public void addEdge(Graphnode node)
-//	{
-//		edges.add(node);
-//		node.edges.add(this);
-//		
-//	}
-//	
-//	public void removeEdge(Graphnode node)
-//	{
-//		edges.remove(node);
-//		node.edges.remove(this);
-//	}
+	@Test
+	public final void removeEdgeIfAnyOfTheVerticesDoesNotExist() {
+		// setup the graph by adding few vertices and edges
+		int breakIndex = 6;
+		List<String> toBeAddedVertices = new ArrayList<>(vertices.subList(0, breakIndex));
+		List<String> notToBeAddedVertices = new ArrayList<>(vertices.subList(breakIndex, breakIndex+2));
+		for (String itrVertex : toBeAddedVertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(toBeAddedVertices.get(0), toBeAddedVertices.get(1));
+		
+		assertEquals("return value if vertex1 doesn't exist", 
+				false, this.graph.removeEdge(notToBeAddedVertices.get(0), toBeAddedVertices.get(0)));		
+		assertEquals("return value if vertex2 doesn't exist", 
+				false, this.graph.removeEdge(toBeAddedVertices.get(0), notToBeAddedVertices.get(0)));
+		assertEquals("return value if both vertex1 and vertex2 doesn't exist", 
+				false, this.graph.removeEdge(notToBeAddedVertices.get(0), notToBeAddedVertices.get(1)));
+		
+		// check if any edge added
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+				if (itrVertex.equals(vertices.get(0)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(1), itrNeighbor);
+				else if (itrVertex.equals(vertices.get(1)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(0), itrNeighbor);
+			}
+			if (itrVertex.equals(vertices.get(0)) || itrVertex.equals(vertices.get(1)))
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 1, numOfEdges);
+			else
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 0, numOfEdges);
+		}
+		assertEquals("number of vertices in the graph", breakIndex, verticesCount);
+	}
 	
+	@Test
+	public final void removeEdgeIfBothVerticesExist() {
+		// setup the graph by adding few vertices and edges
+		for (String itrVertex : vertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(vertices.get(0), vertices.get(1));
+		this.graph.addEdge(vertices.get(1), vertices.get(2));
+		
+		assertEquals("return value if vertex1 equals vertex2", 
+				false, this.graph.removeEdge(vertices.get(0), vertices.get(0)));
+		assertEquals("return value if vertex1 does not equal vertex2", 
+				true, this.graph.removeEdge(vertices.get(0), vertices.get(1)));
+		
+		// check if correct edges added
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+				if (itrVertex.equals(vertices.get(1)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(2), itrNeighbor);
+				else if (itrVertex.equals(vertices.get(2)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(1), itrNeighbor);
+			}
+			if (itrVertex.equals(vertices.get(1)) || itrVertex.equals(vertices.get(2)))
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 1, numOfEdges);
+			else
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 0, numOfEdges);
+		}
+		assertEquals("number of vertices in the graph", numOfVertices, verticesCount);
+	}
 	
+	@Test
+	public final void isAdjacentIfAnyOfTheVerticesDoesNotExist() {
+		// setup the graph by adding a few vertices and edges
+		int breakIndex = 6;
+		List<String> toBeAddedVertices = new ArrayList<>(vertices.subList(0, breakIndex));
+		List<String> notToBeAddedVertices = new ArrayList<>(vertices.subList(breakIndex, breakIndex+2));
+		for (String itrVertex : toBeAddedVertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(toBeAddedVertices.get(0), toBeAddedVertices.get(1));
+		
+		assertEquals("return value if vertex1 doesn't exist", 
+				false, this.graph.isAdjacent(notToBeAddedVertices.get(0), toBeAddedVertices.get(0)));		
+		assertEquals("return value if vertex2 doesn't exist", 
+				false, this.graph.isAdjacent(toBeAddedVertices.get(0), notToBeAddedVertices.get(0)));
+		assertEquals("return value if both vertex1 and vertex2 doesn't exist", 
+				false, this.graph.isAdjacent(notToBeAddedVertices.get(0), notToBeAddedVertices.get(1)));
+	}
 	
+	@Test
+	public final void isAdjacentIfBothVerticesExist() {
+		// setup the graph by adding a few vertices and edges
+		for (String itrVertex : vertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(vertices.get(0), vertices.get(1));
+		this.graph.addEdge(vertices.get(1), vertices.get(2));
+		
+		assertEquals("return value if vertex1 equals vertex2", 
+				false, this.graph.isAdjacent(vertices.get(0), vertices.get(0)));
+		assertEquals("return value if vertex1 does not equal vertex2, both are disconnected and vertex1 has a neighbor", 
+				false, this.graph.isAdjacent(vertices.get(0), vertices.get(3)));
+		assertEquals("return value if vertex1 does not equal vertex2, both are disconnected and vertex2 has a neighbor", 
+				false, this.graph.isAdjacent(vertices.get(3), vertices.get(0)));
+		assertEquals("return value if vertex1 does not equal vertex2, both are disconnected and both have a neighbor", 
+				false, this.graph.isAdjacent(vertices.get(2), vertices.get(0)));
+		assertEquals("return value if vertex1 does not equal vertex2 and both are connected", 
+				true, this.graph.isAdjacent(vertices.get(0), vertices.get(1)));
+	}
 	
+	@Test
+	public final void removeVertexReturnsNull() {
+		// setup the graph by adding a few vertices and edges
+		int breakIndex = 6;
+		List<String> toBeAddedVertices = new ArrayList<>(vertices.subList(0, breakIndex));
+		List<String> notToBeAddedVertices = new ArrayList<>(vertices.subList(breakIndex, breakIndex+2));
+		for (String itrVertex : toBeAddedVertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(toBeAddedVertices.get(0), toBeAddedVertices.get(1));
+		
+		String vertex = this.graph.removeVertex(null);
+		assertEquals("return value if null passed to removeVertex", null, vertex);
+		vertex = this.graph.removeVertex(notToBeAddedVertices.get(0));
+		assertEquals("return value if vertex passed to removeVertex does not exist in graph", null, vertex);
+		
+		// check if graph affected
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+				if (itrVertex.equals(vertices.get(0)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(1), itrNeighbor);
+				else if (itrVertex.equals(vertices.get(1)))
+					assertEquals(String.format("neighbor of vertex=%s", itrVertex), vertices.get(0), itrNeighbor);
+			}
+			if (itrVertex.equals(vertices.get(0)) || itrVertex.equals(vertices.get(1)))
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 1, numOfEdges);
+			else
+				assertEquals(String.format("number of neighbors for vertex=%s", itrVertex), 0, numOfEdges);
+		}
+		assertEquals("num of vertices in the graph", breakIndex, verticesCount);
+	}
+	
+	@Test
+	public final void removeVertexReturnsNonNull() {
+		// setup the graph by adding a few vertices and edges
+		for (String itrVertex : vertices)
+			this.graph.addVertex(itrVertex);
+		this.graph.addEdge(vertices.get(0), vertices.get(1));
+		
+		String vertex = this.graph.removeVertex(vertices.get(2));
+		assertEquals("return value if vertex passed to removeVertex is disconnected", vertices.get(2), vertex);
+		
+		vertex = this.graph.removeVertex(vertices.get(0));
+		assertEquals("return value if vertex passed to removeVertex is connected to another vertex", vertices.get(0), vertex);
+		
+		// check the graph
+		int verticesCount = 0;
+		for (String itrVertex : this.graph.getAllVertices()) {
+			verticesCount++;
+			int numOfEdges = 0;
+			for (String itrNeighbor : this.graph.getNeighbors(itrVertex)) {
+				numOfEdges++;
+				assertEquals(String.format("presence of neighbor=%s of vertex=%s", itrNeighbor, itrVertex), 
+						false, itrVertex.equals(vertices.get(0)) && itrNeighbor.equals(vertices.get(1)));
+				assertEquals(String.format("presence of neighbor=%s of vertex=%s", itrNeighbor, itrVertex), 
+						false, itrVertex.equals(vertices.get(1)) && itrNeighbor.equals(vertices.get(0)));
+			}
+			assertEquals(String.format("presence of vertex=%s", itrVertex), false, itrVertex.equals(vertices.get(0)));
+			assertEquals(String.format("presence of vertex=%s", itrVertex), false, itrVertex.equals(vertices.get(2)));
+		}
+		assertEquals("num of vertices in the graph", numOfVertices-2, verticesCount);
+	}
+
 }
