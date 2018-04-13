@@ -41,12 +41,16 @@ public class GraphProcessor {
      * Graph which stores the dictionary words and their associated connections
      */
     private Graph<String> graph;
+    ArrayList<String> vertices;
+    ArrayList<String>[][] paths;
+    int[][] distances;
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
     public GraphProcessor() {
         this.graph = new Graph<>();
+
     }
         
     /**
@@ -66,9 +70,9 @@ public class GraphProcessor {
      */
     public Integer populateGraph(String filepath) throws IOException {
     	int count = 0;
-    	WordProcessor wp = new WordProcessor();
-    	Stream<String> wordStream = wp.getWordStream(filepath);
-    	String[] words = (String[]) wordStream.toArray();
+    	//WordProcessor wp = new WordProcessor();
+    	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
+    	String[] words = wordStream.toArray(String[]::new);
     	for(String word : words)
     	{
     		graph.addVertex(word);
@@ -82,13 +86,14 @@ public class GraphProcessor {
     	{
     		for(String node2 : graph.getAllVertices())
     		{
-    			if(!node1.equals(node2) && wp.isAdjacent(node1, node2));
+    			if(!node1.equals(node2) && WordProcessor.isAdjacent(node1, node2));
     			{
     				graph.addEdge(node1, node2);
     			}
     		}
     	}
-    	
+    	shortestPathPrecomputation();
+    	wordStream.close();
         return count;
     
     }
@@ -143,6 +148,9 @@ public class GraphProcessor {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
-    
+    	vertices = (ArrayList<String>) graph.getAllVertices();
+    	for(String vertice : vertices) {
+    		
+    	}
     }
 }
