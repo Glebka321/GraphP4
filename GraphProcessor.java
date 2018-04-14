@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -41,16 +42,16 @@ public class GraphProcessor {
      * Graph which stores the dictionary words and their associated connections
      */
     private Graph<String> graph;
-    ArrayList<String> vertices;
-    ArrayList<String>[][] paths;
-    int[][] distances;
+    private ArrayList<String> vertices; //stores all vertices in the graph
+    private int[][] dist; //matrix of distances between nodes
+    private int[][] pred; //predecessor matrix
+    private boolean[] visited; //keeps track of visited nodes
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
     public GraphProcessor() {
         this.graph = new Graph<>();
-
     }
         
     /**
@@ -72,12 +73,18 @@ public class GraphProcessor {
     	int count = 0;
     	//WordProcessor wp = new WordProcessor();
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
-    	String[] words = wordStream.toArray(String[]::new);
-    	for(String word : words)
-    	{
-    		graph.addVertex(word);
-    		count++;
-    	}
+    	//wordStream.forEach(x -> graph.addVertex(x));
+    	
+    	//I'm just using these as a test since I can't get the stream to work
+    	graph.addVertex("COT");
+    	graph.addVertex("CAT");
+    	graph.addVertex("COAT");
+    	graph.addVertex("BOT");
+    	graph.addVertex("BOAT");
+    	graph.addVertex("BAT");
+    	graph.addVertex("HAT");
+    	graph.addVertex("HOT");
+    	graph.addVertex("HATE");
     	
     	/*
     	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
@@ -91,9 +98,9 @@ public class GraphProcessor {
     				graph.addEdge(node1, node2);
     			}
     		}
+    		count++;
     	}
     	shortestPathPrecomputation();
-    	wordStream.close();
         return count;
     
     }
@@ -118,7 +125,6 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
         return null;
-    
     }
     
     /**
@@ -149,8 +155,38 @@ public class GraphProcessor {
      */
     public void shortestPathPrecomputation() {
     	vertices = (ArrayList<String>) graph.getAllVertices();
-    	for(String vertice : vertices) {
-    		
+    	visited = new boolean[vertices.size()];
+    	dist = new int[vertices.size()][vertices.size()];
+    	pred = new int[vertices.size()][vertices.size()];
+    	for(String vertex : vertices) {
+    		BFS(vertices.indexOf(vertex));
+    	}
+    }
+    /**
+     * Computes shortest distances and best predecessors in relation to the source node
+     * @param src the source node
+     */
+    private void BFS(int src) {
+    	Queue<String> q = new LinkedList<>();
+    	for(int i = 0; i < vertices.size(); i++) {
+    		visited[i] = false;
+    	}
+    	q.add(vertices.get(src));
+    	visited[src] = true;
+    	dist[src][src] = 0;
+    	int index;
+    	while(!q.isEmpty()) {
+    		String u = q.remove();
+    		Iterable<String> neighbors = graph.getNeighbors(u);
+    		for(String s : neighbors) {
+    			index = vertices.indexOf(s);
+    			if(!visited[index]) {
+    				q.add(s);
+    				visited[index] = true;
+    				dist[src][index] = dist[src][vertices.indexOf(u)] + 1; //sets distance to predecessor distance + 1
+    				pred[src][index] = vertices.indexOf(u); //sets predecessor
+    			}
+    		}
     	}
     }
 }
