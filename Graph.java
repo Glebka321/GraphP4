@@ -33,8 +33,7 @@ public class Graph<E> implements GraphADT<E> {
 	 */
 	private boolean[][] edges;
 	
-	public Graph()
-	{
+	public Graph() {
 		vertices = new ArrayList<E>();
 		edges = new boolean[100][100];
 	}
@@ -55,6 +54,7 @@ public class Graph<E> implements GraphADT<E> {
     	if(!vertices.contains(vertex) && vertex != null)
     	{
     		vertices.add(vertex);
+    		if(vertices.size() >= edges.length) resizeAM();
     		return vertex;
     	}
     	return null;
@@ -105,8 +105,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
-    	if(vertices.contains(vertex1) && vertices.contains(vertex2) && !vertex1.equals(vertex2))
-    	{
+    	if(vertices.contains(vertex1) && vertices.contains(vertex2) && !vertex1.equals(vertex2)) {
     		edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = true;
     		edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = true;
     		return true;
@@ -212,25 +211,18 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public Iterable<E> getAllVertices() {
         return vertices;
-        
     }
-
-}
-
-class Graphnode<T> {
-	private T data;
-	private boolean visited;
-	
-	public Graphnode(T data)
-	{
-		this.data = data;
-		visited = false;
-	}
-	
-	public T getData()
-	{
-		return this.data;
-	}
-
-	
+    
+    /**
+     * Resizes the adjacency matrix
+     */
+    private void resizeAM() {
+    	boolean[][] newAM = new boolean[edges.length*2][edges[0].length*2];
+    	for(int i = 0; i < edges.length; i++ ) {
+    		for(int j = 0; j < edges[0].length; j++) {
+    			newAM[i][j] = edges[i][j];
+    		}
+    	}
+    	edges = newAM;
+    }
 }
