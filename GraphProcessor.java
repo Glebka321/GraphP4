@@ -67,9 +67,7 @@ public class GraphProcessor {
      */
     public Integer populateGraph(String filepath) throws IOException {
     	int count = 0;
-    	//WordProcessor wp = new WordProcessor();
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
-    	//wordStream.forEach(x -> graph.addVertex(x));
 
 		vertices = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
 
@@ -80,21 +78,15 @@ public class GraphProcessor {
     	/*
     	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
     	 */
-    	for(String node1 : graph.getAllVertices())
-    	{
-    		for(String node2 : graph.getAllVertices())
-    		{
-    			if(WordProcessor.isAdjacent(node1, node2))
-    			{
+    	for(String node1 : graph.getAllVertices()) {
+    		for(String node2 : graph.getAllVertices()) {
+    			if(WordProcessor.isAdjacent(node1, node2)) {
     				graph.addEdge(node1, node2);
     			}
     		}
     		count++;
     	}
-
-    	shortestPathPrecomputation();
         return count;
-    
     }
 
     
@@ -116,7 +108,14 @@ public class GraphProcessor {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-        return null;
+    	List<String> list = new ArrayList();
+        int index1 = vertices.indexOf(word1);
+        int index2 = vertices.indexOf(word2);
+        while(index1 != -1) {
+        	list.add(vertices.get(index1));
+        	index1 = pred[index2][index1];
+        }
+    	return list;
     }
     
     /**
@@ -137,7 +136,7 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return null;
+        return dist[vertices.indexOf(word1)][vertices.indexOf(word2)];
     }
     
     /**
@@ -149,6 +148,12 @@ public class GraphProcessor {
     	visited = new boolean[vertices.size()];
     	dist = new int[vertices.size()][vertices.size()];
     	pred = new int[vertices.size()][vertices.size()];
+    	for(int i = 0; i < vertices.size(); i++) {
+    		for(int j = 0; j < vertices.size(); j++) {
+        		dist[i][j] = -1;
+        		pred[i][j] = -1;
+        	}
+    	}
     	for(String vertex : graph.getAllVertices()) {
     		BFS(vertices.indexOf(vertex));
     	}
