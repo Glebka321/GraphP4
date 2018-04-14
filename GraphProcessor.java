@@ -71,9 +71,9 @@ public class GraphProcessor {
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
     	//wordStream.forEach(x -> graph.addVertex(x));
 
-		ArrayList<String> list = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
+		vertices = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
 
-		for ( String token : list ) {
+		for ( String token : vertices ) {
 			graph.addVertex(token);
 		}
 
@@ -84,7 +84,7 @@ public class GraphProcessor {
     	{
     		for(String node2 : graph.getAllVertices())
     		{
-    			if(!node1.equals(node2) && WordProcessor.isAdjacent(node1, node2))
+    			if(WordProcessor.isAdjacent(node1, node2))
     			{
     				graph.addEdge(node1, node2);
     			}
@@ -92,7 +92,6 @@ public class GraphProcessor {
     		count++;
     	}
 
-		System.exit(10000);
     	shortestPathPrecomputation();
         return count;
     
