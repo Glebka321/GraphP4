@@ -76,7 +76,12 @@ public class GraphProcessor {
 		//@TODO: Can remove the following two lines, just here to make sure it's working
 		System.out.println(list);
 		System.exit(100);
-    	
+
+		for ( String token : list ) {
+			graph.addVertex(token);
+		}
+
+
     	//I'm just using these as a test since I can't get the stream to work
     	graph.addVertex("COT");
     	graph.addVertex("CAT");
