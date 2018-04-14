@@ -73,26 +73,10 @@ public class GraphProcessor {
 
 		ArrayList<String> list = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
 
-		//@TODO: Can remove the following two lines, just here to make sure it's working
-		System.out.println(list);
-		System.exit(100);
-
 		for ( String token : list ) {
 			graph.addVertex(token);
 		}
 
-
-    	//I'm just using these as a test since I can't get the stream to work
-    	graph.addVertex("COT");
-    	graph.addVertex("CAT");
-    	graph.addVertex("COAT");
-    	graph.addVertex("BOT");
-    	graph.addVertex("BOAT");
-    	graph.addVertex("BAT");
-    	graph.addVertex("HAT");
-    	graph.addVertex("HOT");
-    	graph.addVertex("HATE");
-    	
     	/*
     	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
     	 */
@@ -100,13 +84,15 @@ public class GraphProcessor {
     	{
     		for(String node2 : graph.getAllVertices())
     		{
-    			if(!node1.equals(node2) && WordProcessor.isAdjacent(node1, node2));
+    			if(!node1.equals(node2) && WordProcessor.isAdjacent(node1, node2))
     			{
     				graph.addEdge(node1, node2);
     			}
     		}
     		count++;
     	}
+
+		System.exit(10000);
     	shortestPathPrecomputation();
         return count;
     
