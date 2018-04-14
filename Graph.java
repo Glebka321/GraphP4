@@ -211,7 +211,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getAllVertices() {
-        return (Iterable<E>) vertices;
+        return vertices;
         
     }
 

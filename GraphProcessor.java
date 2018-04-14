@@ -161,11 +161,10 @@ public class GraphProcessor {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
-    	vertices = (ArrayList<String>) graph.getAllVertices();
     	visited = new boolean[vertices.size()];
     	dist = new int[vertices.size()][vertices.size()];
     	pred = new int[vertices.size()][vertices.size()];
-    	for(String vertex : vertices) {
+    	for(String vertex : graph.getAllVertices()) {
     		BFS(vertices.indexOf(vertex));
     	}
     }
