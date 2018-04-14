@@ -1,11 +1,7 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -74,6 +70,12 @@ public class GraphProcessor {
     	//WordProcessor wp = new WordProcessor();
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
     	//wordStream.forEach(x -> graph.addVertex(x));
+
+		ArrayList<String> list = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
+
+		//@TODO: Can remove the following two lines, just here to make sure it's working
+		System.out.println(list);
+		System.exit(100);
     	
     	//I'm just using these as a test since I can't get the stream to work
     	graph.addVertex("COT");

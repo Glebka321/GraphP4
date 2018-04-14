@@ -31,8 +31,10 @@ public class WordProcessor {
      */
     public static Stream<String> getWordStream(String filepath) throws IOException {
         Stream<String> stream = Files.lines(Paths.get(filepath));
-        stream.map(String::trim).filter(line -> line!=null && !line.equals("")).map(String::toUpperCase);
-        return stream;
+
+        return stream.filter(line -> !line.isEmpty()).map(String::toUpperCase).map(String::trim);
+        //@TODO: Connor, this fixes stream issue ATM
+        //return stream.map(String::trim).filter(line -> line != null && !line.("")).map(String::toUpperCase);
     }
 
     /**
