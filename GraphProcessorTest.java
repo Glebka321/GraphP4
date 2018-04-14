@@ -31,5 +31,10 @@ public class GraphProcessorTest {
 	@Test
 	public final void Test1() throws Exception {
 		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		for(String s : gp.getShortestPath("RAPINE", "PATTIES")) System.out.println(s);
+		System.out.println(gp.getShortestDistance("RAPINE", "PATTIES"));
+		for(String s : gp.getShortestPath("RAPINE", "GIBLETS")) System.out.println(s);
+		System.out.println(gp.getShortestDistance("RAPINE", "GIBLETS"));
 	}
 }
