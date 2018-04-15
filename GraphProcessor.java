@@ -185,4 +185,12 @@ public class GraphProcessor {
     		}
     	}
     }
+    /**
+     * Clears the graph
+     */
+    public void clearGraph() {
+        for ( String token : vertices ) {
+            graph.removeVertex(token);
+        }
+    }
 }
