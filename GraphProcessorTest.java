@@ -32,39 +32,31 @@ public class GraphProcessorTest {
 		gp = null;
 	}
 
-	@Test
-	public final void Test1() throws Exception {
-	      gp.populateGraph("file.txt");
-	      gp.shortestPathPrecomputation();
-	      for(String s : gp.getShortestPath("RAPINE", "PATTIES")) System.out.println(s);
-	      System.out.println(gp.getShortestDistance("RAPINE", "PATTIES"));
-	      for(String s : gp.getShortestPath("RAPINE", "GIBLETS")) System.out.println(s);
-	      System.out.println(gp.getShortestDistance("RAPINE", "GIBLETS"));
-	}
 	@Test 
-        public final void testPopulateGraph() throws IOException {
-              Integer count = 6;
-              gp.clearGraph();
-              assertEquals(gp.populateGraph("filegraph.txt"), count);
-        }
-    
-        @Test
-        public final void testGetShortestPath() throws IOException {
-              List<String> list = Stream.of("cat", "hat", "heat", "wheat").collect(Collectors.toList());
-              String word1 = "cat";
-              String word2 = "wheat";
-              gp.clearGraph();
-              gp.populateGraph("filegraph.txt");
-              assertEquals(list, gp.getShortestPath(word1, word2));
-        }
-    
-       @Test 
-       public final void testGetShortestDistance() throws IOException {
-              Integer distance = 3;
-              String word1 = "cat";
-              String word2 = "wheat";
-              gp.clearGraph();
-              gp.populateGraph("filegraph.txt");
-              assertEquals(gp.getShortestDistance(word1, word2), distance);
-       }
+	public final void testPopulateGraph() throws IOException {
+		Integer count = 427;
+		assertEquals(gp.populateGraph("file.txt"), count);
+	}
+
+	@Test
+	public final void testGetShortestPath() throws IOException {
+		List<String> list = Stream.of("rapine", "ravine" , "raving", "roving", "roping", "coping", "coming", "coaming", "coaling",
+										"colling", "collins", "collies", "jollies","jellies", "bellies", "bullies", "bullier",
+										"burlier", "curlier", "currier", "carrier", "carries", "parries", "parties", "patties").collect(Collectors.toList());
+		String word1 = "rapine";
+		String word2 = "patties";
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(list, gp.getShortestPath(word1, word2));
+	}
+
+	@Test 
+	public final void testGetShortestDistance() throws IOException {
+		Integer distance = 41;
+		String word1 = "rapine";
+		String word2 = "giblets";
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
 }
