@@ -109,10 +109,10 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
     	List<String> list = new ArrayList();
-        int index1 = vertices.indexOf(word1);
-        int index2 = vertices.indexOf(word2);
+        int index1 = vertices.indexOf(word1.toUpperCase());
+        int index2 = vertices.indexOf(word2.toUpperCase());
         while(index1 != -1) {
-        	list.add(vertices.get(index1));
+        	list.add(vertices.get(index1).toLowerCase());
         	index1 = pred[index2][index1];
         }
     	return list;
@@ -136,7 +136,7 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return dist[vertices.indexOf(word1)][vertices.indexOf(word2)];
+        return dist[vertices.indexOf(word1.toUpperCase())][vertices.indexOf(word2.toUpperCase())];
     }
     
     /**
