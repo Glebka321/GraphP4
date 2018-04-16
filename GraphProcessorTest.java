@@ -184,4 +184,18 @@ public class GraphProcessorTest {
 		gp.shortestPathPrecomputation();
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
+
+	/**
+	 * A word's distance to itself should be -1
+	 * @throws IOException if file can not be read.
+	 */
+	@Test
+	public final void distanceToItself() throws IOException {
+		Integer distance = -1;
+		String word1 = "homilys";
+		String word2 = word1;
+		gp.populateGraph("filetwo.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
 }
