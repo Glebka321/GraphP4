@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,5 +60,102 @@ public class GraphProcessorTest {
 		gp.populateGraph("file.txt");
 		gp.shortestPathPrecomputation();
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+
+	@Test
+	public final void interestingCombosOne() throws IOException {
+		Integer distance = 49;
+		String word1 = "comedo";
+		String word2 = "charge";
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void interestingCombosTwo() throws IOException {
+		Integer distance = 2;
+		String word1 = "bellies";
+		String word2 = "jollies";
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void interestingCombosThree() throws IOException {
+		Integer distance = 26;
+		String word1 = "define";
+		String word2 = "shinny";
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void sameWordsNotAdjacent() {
+		assertTrue("dog should not be adjacent with itself", !WordProcessor.isAdjacent("dog", "dog"));
+		assertTrue("alligator should not be adjacent with itself", !WordProcessor.isAdjacent("alligator", "alligator"));
+		assertTrue("smith should not be adjacent with itself", !WordProcessor.isAdjacent("smith", "smith"));
+		assertTrue("a should not be adjacent with itself", !WordProcessor.isAdjacent("a", "a"));
+	}
+
+	@Test
+	public final void adjacentOneLetterAddedAtEnd() {
+		Boolean expected = true;
+
+		String wordOne = "AAAA";
+		String wordTwo = "AAAAb";
+		Boolean result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		String message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+
+		wordOne = "AAAA";
+		wordTwo = "bAAAA";
+		result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+	}
+
+	@Test
+	public final void adjacentOneLetterAddedInMiddle() {
+		Boolean expected = true;
+		String wordOne = "AAAA";
+		String wordTwo = "AAbAA";
+
+		Boolean result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		String message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+
+		wordOne = "AAAA";
+		wordTwo = "AbAAA";
+		result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+	}
+
+	@Test
+	public final void notAdjacent() {
+		Boolean expected = false;
+
+		String wordOne = "AAAAb";
+		String wordTwo = "bAAAA";
+		Boolean result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		String message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+
+		wordOne = "AAAA";
+		wordTwo = "AbbA";
+		result = WordProcessor.isAdjacent(wordOne, wordTwo);
+		message = wordOne + " and " + wordTwo + " should return " + expected + ", but return " + result;
+		assertEquals(message, expected, result);
+	}
+
+	@Test
+	public final void adjacentWithNulls() {
+		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent(null, null));
+		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent("", null));
+		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent(null, ""));
 	}
 }
