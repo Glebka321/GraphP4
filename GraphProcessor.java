@@ -117,11 +117,16 @@ public class GraphProcessor {
         int index1 = vertices.indexOf(word1.toUpperCase());
         int index2 = vertices.indexOf(word2.toUpperCase());
 
-        // after last pred, index1 will be -1
-		while ( index1 != -1 ) {
-			list.add(vertices.get(index1).toLowerCase());
-			index1 = pred[index2][index1];
+        // Only look for path if words are not the same
+		if ( !word1.equals(word2) ) {
+
+			// after last pred, index1 will be -1
+			while ( index1 != -1 ) {
+				list.add(vertices.get(index1).toLowerCase());
+				index1 = pred[index2][index1];
+			}
 		}
+
     	return list;
     }
 
@@ -143,7 +148,17 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-    	int word1Index = vertices.indexOf(word1.toUpperCase());
+
+    	// if word one equals word 2, OR if either word are not included in graph
+		// -1 gets returned as shortest distance
+		if ( word1.equals(word2) ) {
+			return -1;
+		}
+		else if ( !vertices.contains(word1) || !vertices.contains(word2) ) {
+			return -1;
+		}
+
+		int word1Index = vertices.indexOf(word1.toUpperCase());
 		int word2Index = vertices.indexOf(word2.toUpperCase());
 		return dist[word1Index][word2Index];
     }

@@ -158,4 +158,19 @@ public class GraphProcessorTest {
 		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent("", null));
 		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent(null, ""));
 	}
+
+	@Test
+	public final void shortestDistanceWordsDoNotExist() {
+		int result = gp.getShortestDistance("zzzz", "zzzz");
+		assertTrue("result of shortestDistance should be -1",result == -1);
+	}
+
+	@Test
+	public final void shortestPathSameWord() throws IOException {
+		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		List<String> list = gp.getShortestPath("unity", "unity");
+		System.out.println(list);
+		assertTrue("shortest path between two of same word should be empty", list.isEmpty());
+	}
 }
