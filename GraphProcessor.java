@@ -1,6 +1,8 @@
 import java.io.IOException;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,15 +71,16 @@ public class GraphProcessor {
     	int count = 0;
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
 
-		vertices = wordStream.map(string -> string.split(" ")).flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
+    	// Splits stream into array list of whitespace seperated tokens.
+		vertices = wordStream.map(string -> string.split(" "))
+				.flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
 
+		// Add tokens to graph
 		for ( String token : vertices ) {
 			graph.addVertex(token);
 		}
 
-    	/*
-    	 * Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
-    	 */
+    	// Tests whether node1 is adjacent to node2, and if they are, add an edge between the two nodes
     	for(String node1 : graph.getAllVertices()) {
     		for(String node2 : graph.getAllVertices()) {
     			if(WordProcessor.isAdjacent(node1, node2)) {
@@ -86,6 +89,7 @@ public class GraphProcessor {
     		}
     		count++;
     	}
+
         return count;
     }
 
@@ -108,13 +112,16 @@ public class GraphProcessor {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-    	List<String> list = new ArrayList();
+    	List<String> list = new ArrayList<>();
         int index1 = vertices.indexOf(word1.toUpperCase());
         int index2 = vertices.indexOf(word2.toUpperCase());
+
+        // After last pred index1 will be -1
         while(index1 != -1) {
         	list.add(vertices.get(index1).toLowerCase());
         	index1 = pred[index2][index1];
         }
+
     	return list;
     }
     
@@ -136,7 +143,11 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-        return dist[vertices.indexOf(word1.toUpperCase())][vertices.indexOf(word2.toUpperCase())];
+    	// Get two index of each word, and return distance from dist
+		int word1Index = vertices.indexOf(word1.toUpperCase());
+		int word2Index = vertices.indexOf(word2.toUpperCase());
+
+        return dist[word1Index][word2Index];
     }
     
     /**
@@ -145,44 +156,62 @@ public class GraphProcessor {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
+    	// Initialize all arrays to size of vertices.
     	visited = new boolean[vertices.size()];
     	dist = new int[vertices.size()][vertices.size()];
     	pred = new int[vertices.size()][vertices.size()];
+
+    	// Default value for dist and pred all to -1
     	for(int i = 0; i < vertices.size(); i++) {
     		for(int j = 0; j < vertices.size(); j++) {
         		dist[i][j] = -1;
         		pred[i][j] = -1;
         	}
     	}
+
+    	// Perform BFS on all vertices
     	for(String vertex : graph.getAllVertices()) {
     		BFS(vertices.indexOf(vertex));
     	}
     }
+
     /**
      * Computes shortest distances and best predecessors in relation to the source node
      * @param src the source node
      */
     private void BFS(int src) {
-    	Queue<String> q = new LinkedList<>();
-    	for(int i = 0; i < vertices.size(); i++) {
-    		visited[i] = false;
-    	}
-    	q.add(vertices.get(src));
+    	LinkedList<String> queue = new LinkedList<>();
+
+    	// Set all visited verticies to false.
+		for ( int i = 0; i < vertices.size(); i++ ) {
+			visited[i] = false;
+		}
+
+		// add first vertex to queue, set to visited
+    	queue.add(vertices.get(src));
     	visited[src] = true;
     	dist[src][src] = 0;
+
+    	// BFS algorithm: add item to queue, check all neighbors
     	int index;
-    	while(!q.isEmpty()) {
-    		String u = q.remove();
-    		Iterable<String> neighbors = graph.getNeighbors(u);
-    		for(String s : neighbors) {
-    			index = vertices.indexOf(s);
-    			if(!visited[index]) {
-    				q.add(s);
-    				visited[index] = true;
-    				dist[src][index] = dist[src][vertices.indexOf(u)] + 1; //sets distance to predecessor distance + 1
-    				pred[src][index] = vertices.indexOf(u); //sets predecessor
-    			}
-    		}
-    	}
+		while ( !queue.isEmpty() ) {
+			String u = queue.remove();
+			Iterable<String> neighbors = graph.getNeighbors(u);
+			for ( String s : neighbors ) {
+				index = vertices.indexOf(s);
+
+				// if not visited, add to queue, mark as visited
+				if ( !visited[index] ) {
+					queue.add(s);
+					visited[index] = true;
+
+					//sets distance to predecessor distance + 1
+					dist[src][index] = dist[src][vertices.indexOf(u)] + 1;
+
+					//sets predecessor
+					pred[src][index] = vertices.indexOf(u);
+				}
+			}
+		}
     }
 }

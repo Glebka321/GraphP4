@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,24 +10,24 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class GraphProcessorTest {
-	GraphProcessor gp;
+	private GraphProcessor gp;
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
 		
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() {
 
 	}
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		gp = new GraphProcessor();
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		gp = null;
 	}
 
@@ -56,6 +55,36 @@ public class GraphProcessorTest {
 		String word1 = "rapine";
 		String word2 = "giblets";
 		gp.populateGraph("file.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void interestingCombosOne() throws IOException {
+		Integer distance = 49;
+		String word1 = "comedo";
+		String word2 = "charge";
+		gp.populateGraph("word_list.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void interestingCombosTwo() throws IOException {
+		Integer distance = 2;
+		String word1 = "bellies";
+		String word2 = "jollies";
+		gp.populateGraph("word_list.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
+	}
+
+	@Test
+	public final void interestingCombosThree() throws IOException {
+		Integer distance = 26;
+		String word1 = "define";
+		String word2 = "shinny";
+		gp.populateGraph("word_list.txt");
 		gp.shortestPathPrecomputation();
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}

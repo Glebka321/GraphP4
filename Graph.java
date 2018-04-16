@@ -1,7 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Undirected and unweighted graph implementation
@@ -16,7 +13,6 @@ public class Graph<E> implements GraphADT<E> {
 	/**
      * Instance variables and constructors
      */
-	
 	
 	/*
 	 * Stores all of the vertices of the graph as Graphnodes
@@ -51,13 +47,18 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E addVertex(E vertex) {
-    	if(!vertices.contains(vertex) && vertex != null)
-    	{
-    		vertices.add(vertex);
-    		if(vertices.size() >= edges.length) resizeAM();
-    		return vertex;
-    	}
-    	return null;
+    	E vertexAdded = null;
+
+		if ( vertex != null && !vertices.contains(vertex) ) {
+			vertices.add(vertex);
+			if ( vertices.size() >= edges.length ) {
+				resizeAM();
+			}
+
+			vertexAdded = vertex;
+		}
+
+    	return vertexAdded;
         
     }
 
@@ -73,22 +74,20 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E removeVertex(E vertex) {
-    	if(vertex == null)
-    		return null;
-		if(vertices.contains(vertex))
-		{
-			for(int row = 0; row < edges.length; row++)
-			{
+    	E vertexRemoved = null;
+
+		// If vertices include vertex, remove
+		if ( vertex != null && vertices.contains(vertex) ) {
+			for ( int row = 0; row < edges.length; row++ ) {
 				edges[vertices.indexOf(vertex)][row] = false;
 				edges[row][vertices.indexOf(vertex)] = false;
 			}
-			vertices.remove(vertices.indexOf(vertex));
-			
-			E temp = vertex;
-			return temp;
+			vertices.remove(vertex);
+
+			vertexRemoved = vertex;
 		}
-		else
-			return null;
+
+		return vertexRemoved;
         
     }
 
@@ -105,13 +104,15 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
+
+    	boolean edgeAdded = false;
     	if(vertices.contains(vertex1) && vertices.contains(vertex2) && !vertex1.equals(vertex2)) {
     		edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = true;
     		edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = true;
-    		return true;
+			edgeAdded = true;
     	}
-        return false;
-        
+
+        return edgeAdded;
     }    
 
     /**
@@ -127,16 +128,17 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
+
+    	boolean edgeRemoved = false;
     	//The two vertices are in the graph and thus can be removed
-    	if(vertices.contains(vertex1) && vertices.contains(vertex2) && !vertex1.equals(vertex2))
-    	{
-    		edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = false;
-    		edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = false;
-    		return true;
-    	}
+		if ( vertices.contains(vertex1) && vertices.contains(vertex2) && !vertex1.equals(vertex2) ) {
+			edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)] = false;
+			edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] = false;
+			edgeRemoved = true;
+		}
+
     	//One or more of the vertices are not in the graph or vertex == vertex2
-    	return false;
-        
+    	return edgeRemoved;
     }
 
     /**
@@ -155,17 +157,18 @@ public class Graph<E> implements GraphADT<E> {
     	/*
     	 * One or more of the vertices is not in the Graph
     	 */
-    	if(!vertices.contains(vertex1) || !vertices.contains(vertex2))
-    		return false;
-    	
+		if ( vertex1.equals(vertex2) || !vertices.contains(vertex1) || !vertices.contains(vertex2) ) {
+			return false;
+		}
+
     	/*
     	 * Both vertices exist in the graph and the vertices
     	 * are not the same
     	 */
-        if(edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)]
-        	&& edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)]
-        	&& !vertex1.equals(vertex2))
-        	return true;
+		if ( edges[vertices.indexOf(vertex1)][vertices.indexOf(vertex2)]
+				&& edges[vertices.indexOf(vertex2)][vertices.indexOf(vertex1)] ) {
+			return true;
+		}
     	
     	return false;
         
@@ -179,27 +182,26 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        ArrayList<E> neighbors = new ArrayList<E>();
+        ArrayList<E> neighbors = new ArrayList<>();
         
         /*
          * Vertex not in the Graph
          */
-        if(!vertices.contains(vertex))
-        	return null;
-        
+		if ( !vertices.contains(vertex) ) {
+			return null;
+		}
+
         /*
          * Checks if an edge exists between the given vertex and all
          * other vertices, and if so, the other vertice that shares an edge
          * to the given vertice is added to the neighbors arraylist
          */
-        for(int col = 0; col < edges.length; col++)
-        {
-        	if(edges[vertices.indexOf(vertex)][col])
-        	{
-        		neighbors.add(vertices.get((col)));
-        	}
-        	
-        }
+		for ( int col = 0; col < edges.length; col++ ) {
+			if ( edges[vertices.indexOf(vertex)][col] ) {
+				neighbors.add(vertices.get((col)));
+			}
+		}
+
         return neighbors;
     }
 
@@ -217,12 +219,16 @@ public class Graph<E> implements GraphADT<E> {
      * Resizes the adjacency matrix
      */
     private void resizeAM() {
-    	boolean[][] newAM = new boolean[edges.length*2][edges[0].length*2];
+		int newSize = (int) (edges.length * 1.5);
+    	boolean[][] newAM = new boolean[newSize][newSize];
+
+    	// copy old AM to new AM
     	for(int i = 0; i < edges.length; i++ ) {
-    		for(int j = 0; j < edges[0].length; j++) {
-    			newAM[i][j] = edges[i][j];
-    		}
+			for ( int j = 0; j < edges[0].length; j++ ) {
+				newAM[i][j] = edges[i][j];
+			}
     	}
+
     	edges = newAM;
     }
 }

@@ -31,10 +31,7 @@ public class WordProcessor {
      */
     public static Stream<String> getWordStream(String filepath) throws IOException {
         Stream<String> stream = Files.lines(Paths.get(filepath));
-
         return stream.filter(line -> !line.isEmpty()).map(String::toUpperCase).map(String::trim);
-        //@TODO: Connor, this fixes stream issue ATM
-        //return stream.map(String::trim).filter(line -> line != null && !line.("")).map(String::toUpperCase);
     }
 
     /**
@@ -57,11 +54,7 @@ public class WordProcessor {
         int sizeDifference = Math.abs(word1Size - word2Size);
 
         // If words are the same, they are not adjacent
-        if ( word1.compareTo(word2) == 0 ) {
-            return false;
-        }
-
-        if ( sizeDifference > 1 ) {
+        if ( word1.equals(word2) || sizeDifference > 1 ) {
             return false;
         }
 
@@ -74,37 +67,38 @@ public class WordProcessor {
                 }
             }
         }
-
-        if (word1.length() - word2.length() == 1) {
-            int i = 0;
-            while (i < word2.length() && Character.toString(word1.charAt(i))
-                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
-                i++;
-            }
-            differenceCount++;
-            for (int j = i; j < word2.length(); j++) {
-                if (Character.toString(word1.charAt(j + 1))
-                                .compareTo(Character.toString(word2.charAt(j))) != 0) {
-                    differenceCount++;
-                }
-            }
+        else if ( word1Size - word2Size == 1 ) {
+            differenceCount = getDifferences(word1, word2);
         }
-        if (word1.length() - word2.length() == -1) {
-            int i = 0;
-            while (i < word1.length() && Character.toString(word1.charAt(i))
-                            .compareTo(Character.toString(word2.charAt(i))) == 0) {
-                i++;
-            }
-            differenceCount++;
-            for (int j = i; j < word1.length(); j++) {
-                if (Character.toString(word1.charAt(j))
-                                .compareTo(Character.toString(word2.charAt(j + 1))) != 0) {
-                    differenceCount++;
-                }
-            }
+        else if ( word2Size - word1Size == 1 ) {
+            differenceCount = getDifferences(word2, word1);
         }
 
-        return (differenceCount == 1);
+        // Return true only when one difference exists.
+        return differenceCount == 1;
+    }
+
+    /**
+     * Gets the amount of differences between two words of Strings one character apart in length
+     * @param longerWord The longer of the two words to compare
+     * @param shorterWord The shorter of the two words to compare
+     * @return the number of differences between the two words
+     */
+    private static int getDifferences(String longerWord, String shorterWord) {
+        int differenceCount = 1;
+        int i = 0;
+        while (i < shorterWord.length() && Character.toString(longerWord.charAt(i))
+                .compareTo(Character.toString(shorterWord.charAt(i))) == 0) {
+            i++;
+        }
+        for (int j = i; j < shorterWord.length(); j++) {
+            if (Character.toString(longerWord.charAt(j + 1))
+                    .compareTo(Character.toString(shorterWord.charAt(j))) != 0) {
+                differenceCount++;
+            }
+        }
+
+        return differenceCount;
     }
 
 }
