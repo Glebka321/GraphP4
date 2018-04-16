@@ -149,6 +149,9 @@ public class GraphProcessor {
      */
     public Integer getShortestDistance(String word1, String word2) {
 
+		word1 = word1.toUpperCase();
+		word2 = word2.toUpperCase();
+
     	// if word one equals word 2, OR if either word are not included in graph
 		// -1 gets returned as shortest distance
 		if ( word1.equals(word2) ) {
@@ -158,8 +161,8 @@ public class GraphProcessor {
 			return -1;
 		}
 
-		int word1Index = vertices.indexOf(word1.toUpperCase());
-		int word2Index = vertices.indexOf(word2.toUpperCase());
+		int word1Index = vertices.indexOf(word1);
+		int word2Index = vertices.indexOf(word2);
 		return dist[word1Index][word2Index];
     }
 
