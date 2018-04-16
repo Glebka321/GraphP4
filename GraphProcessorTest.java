@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,9 +13,10 @@ import org.junit.Test;
 
 public class GraphProcessorTest {
 	GraphProcessor gp;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+
 	}
 
 	@AfterClass
@@ -34,7 +34,7 @@ public class GraphProcessorTest {
 		gp = null;
 	}
 
-	@Test 
+	@Test
 	public final void testPopulateGraph() throws IOException {
 		Integer count = 427;
 		assertEquals(gp.populateGraph("file.txt"), count);
@@ -42,9 +42,9 @@ public class GraphProcessorTest {
 
 	@Test
 	public final void testGetShortestPath() throws IOException {
-		List<String> list = Stream.of("rapine", "ravine" , "raving", "roving", "roping", "coping", "coming", "coaming", "coaling",
-										"colling", "collins", "collies", "jollies","jellies", "bellies", "bullies", "bullier",
-										"burlier", "curlier", "currier", "carrier", "carries", "parries", "parties", "patties").collect(Collectors.toList());
+		List<String> list = Stream.of("rapine", "ravine", "raving", "roving", "roping", "coping", "coming", "coaming", "coaling",
+				"colling", "collins", "collies", "jollies", "jellies", "bellies", "bullies", "bullier",
+				"burlier", "curlier", "currier", "carrier", "carries", "parries", "parties", "patties").collect(Collectors.toList());
 		String word1 = "rapine";
 		String word2 = "patties";
 		gp.populateGraph("file.txt");
@@ -52,7 +52,7 @@ public class GraphProcessorTest {
 		assertEquals(list, gp.getShortestPath(word1, word2));
 	}
 
-	@Test 
+	@Test
 	public final void testGetShortestDistance() throws IOException {
 		Integer distance = 41;
 		String word1 = "rapine";
@@ -162,7 +162,7 @@ public class GraphProcessorTest {
 	@Test
 	public final void shortestDistanceWordsDoNotExist() {
 		int result = gp.getShortestDistance("zzzz", "zzzz");
-		assertTrue("result of shortestDistance should be -1",result == -1);
+		assertTrue("result of shortestDistance should be -1", result == -1);
 	}
 
 	@Test
@@ -172,5 +172,16 @@ public class GraphProcessorTest {
 		List<String> list = gp.getShortestPath("unity", "unity");
 		System.out.println(list);
 		assertTrue("shortest path between two of same word should be empty", list.isEmpty());
+	}
+
+	@Test
+	public final void twoFiles() throws IOException {
+		Integer distance = 1;
+		String word1 = "homilys";
+		String word2 = "homily";
+		gp.populateGraph("file.txt");
+		gp.populateGraph("filetwo.txt");
+		gp.shortestPathPrecomputation();
+		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
 }

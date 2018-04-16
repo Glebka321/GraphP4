@@ -50,6 +50,7 @@ public class GraphProcessor {
      */
     public GraphProcessor() {
         this.graph = new Graph<>();
+		this.vertices = new ArrayList<>();
     }
 
     /**
@@ -71,11 +72,12 @@ public class GraphProcessor {
     	int count = 0;
     	Stream<String> wordStream = WordProcessor.getWordStream(filepath);
 
-		vertices = wordStream.map(string -> string.split(" "))
+		ArrayList<String> stringsFromStream = wordStream.map(string -> string.split(" "))
 				.flatMap(Arrays::stream).collect(Collectors.toCollection(ArrayList::new));
 
-		for ( String token : vertices ) {
+		for ( String token : stringsFromStream ) {
 			graph.addVertex(token);
+			vertices.add(token);
 		}
 
     	/*

@@ -38,7 +38,6 @@ public class Graph<E> implements GraphADT<E> {
 		edges = new boolean[INITIAL_SIZE][INITIAL_SIZE];
 	}
 
-
 	/**
      * Add new vertex to the graph
      *
@@ -188,7 +187,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        ArrayList<E> neighbors = new ArrayList<E>();
+        ArrayList<E> neighbors = new ArrayList<>();
 
         /*
          * Vertex not in the Graph
