@@ -46,7 +46,9 @@ public class GraphProcessorTest {
 	@Test
 	public final void testPopulateGraph() throws IOException {
 		Integer count = 427;
+		Integer count2 = count + 2;
 		assertEquals(gp.populateGraph("file.txt"), count);
+		assertEquals(gp.populateGraph("filetwo.txt"), count2);
 	}
 
 	/**
