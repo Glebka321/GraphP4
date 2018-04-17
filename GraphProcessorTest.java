@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -11,6 +12,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Contains test cases to test both GraphProcessor and WordProcessor classes, reads
+ * from the files file.txt, and filetwo.txt
+ */
 public class GraphProcessorTest {
 	GraphProcessor gp;
 
@@ -34,12 +39,20 @@ public class GraphProcessorTest {
 		gp = null;
 	}
 
+	/**
+	 * Ensures graph is properly populated with correct amount of nodes
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void testPopulateGraph() throws IOException {
 		Integer count = 427;
 		assertEquals(gp.populateGraph("file.txt"), count);
 	}
 
+	/**
+	 * Tests that the shortest path between two nodes is correct
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void testGetShortestPath() throws IOException {
 		List<String> list = Stream.of("rapine", "ravine", "raving", "roving", "roping", "coping", "coming", "coaming", "coaling",
@@ -52,6 +65,10 @@ public class GraphProcessorTest {
 		assertEquals(list, gp.getShortestPath(word1, word2));
 	}
 
+	/**
+	 * Tests a distance between two nodes on graph
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void testGetShortestDistance() throws IOException {
 		Integer distance = 41;
@@ -62,7 +79,10 @@ public class GraphProcessorTest {
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
 
-
+	/**
+	 * From interesting combos, tests adjacency from file file.txt
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void interestingCombosOne() throws IOException {
 		Integer distance = 49;
@@ -73,6 +93,10 @@ public class GraphProcessorTest {
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
 
+	/**
+	 * From interesting combos, tests adjacency from file file.txt
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void interestingCombosTwo() throws IOException {
 		Integer distance = 2;
@@ -83,6 +107,10 @@ public class GraphProcessorTest {
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
 
+	/**
+	 * From interesting combos, tests adjacency from file file.txt
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void interestingCombosThree() throws IOException {
 		Integer distance = 26;
@@ -93,6 +121,20 @@ public class GraphProcessorTest {
 		assertEquals(gp.getShortestDistance(word1, word2), distance);
 	}
 
+	/**
+	 * Give a non existent vertex, should return false.
+	 * @throws IOException if file can not be read
+	 */
+	@Test
+	public final void adjacentNonExistantVertex() throws IOException {
+		gp.populateGraph("filetwo.txt");
+		gp.shortestPathPrecomputation();
+		assertFalse("non existant vertex should return false", WordProcessor.isAdjacent("toys", "nothere"));
+	}
+
+	/**
+	 * Tests that the same word is not adjacent with itself
+	 */
 	@Test
 	public final void sameWordsNotAdjacent() {
 		assertTrue("dog should not be adjacent with itself", !WordProcessor.isAdjacent("dog", "dog"));
@@ -101,6 +143,9 @@ public class GraphProcessorTest {
 		assertTrue("a should not be adjacent with itself", !WordProcessor.isAdjacent("a", "a"));
 	}
 
+	/**
+	 * tests cases where words are adjacent with different number of letters.
+	 */
 	@Test
 	public final void adjacentOneLetterAddedAtEnd() {
 		Boolean expected = true;
@@ -118,6 +163,9 @@ public class GraphProcessorTest {
 		assertEquals(message, expected, result);
 	}
 
+	/**
+	 * Tests several cases where words are adjacent with only middle character differences
+	 */
 	@Test
 	public final void adjacentOneLetterAddedInMiddle() {
 		Boolean expected = true;
@@ -135,6 +183,9 @@ public class GraphProcessorTest {
 		assertEquals(message, expected, result);
 	}
 
+	/**
+	 * Tests several cases where words are not adjacent
+	 */
 	@Test
 	public final void notAdjacent() {
 		Boolean expected = false;
@@ -152,19 +203,29 @@ public class GraphProcessorTest {
 		assertEquals(message, expected, result);
 	}
 
+	/**
+	 * If one of two words is null, adjacency should return false.
+	 */
 	@Test
 	public final void adjacentWithNulls() {
-		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent(null, null));
-		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent("", null));
-		assertTrue("null adjacency should return false", !WordProcessor.isAdjacent(null, ""));
+		assertFalse("null adjacency should return false", WordProcessor.isAdjacent(null, null));
+		assertFalse("null adjacency should return false", WordProcessor.isAdjacent("", null));
+		assertFalse("null adjacency should return false", WordProcessor.isAdjacent(null, ""));
 	}
 
+	/**
+	 * if words are not in graph, distance should be -1
+	 */
 	@Test
 	public final void shortestDistanceWordsDoNotExist() {
 		int result = gp.getShortestDistance("zzzz", "zzzz");
 		assertTrue("result of shortestDistance should be -1", result == -1);
 	}
 
+	/**
+	 * shortest path from one word to itself should be an empty list
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void shortestPathSameWord() throws IOException {
 		gp.populateGraph("file.txt");
@@ -174,11 +235,15 @@ public class GraphProcessorTest {
 		assertTrue("shortest path between two of same word should be empty", list.isEmpty());
 	}
 
+	/**
+	 * Adds two files to gp, makes sure all words are added.
+	 * @throws IOException if file can not be read
+	 */
 	@Test
 	public final void twoFiles() throws IOException {
 		Integer distance = 1;
-		String word1 = "homilys";
-		String word2 = "homily";
+		String word1 = "homilys"; // contained in second file
+		String word2 = "homily"; // contained in first file
 		gp.populateGraph("file.txt");
 		gp.populateGraph("filetwo.txt");
 		gp.shortestPathPrecomputation();
